@@ -1,1887 +1,966 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="te">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>LOOPIN — One Workspace</title>
-
-<style>
-*{box-sizing:border-box;margin:0;padding:0}
+<meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Karthika Masam Pooja Kit</title><style>
+*{box-sizing:border-box}
 
-:root{
-  --bg:#fff;
-  --text:#17171b;
-  --muted:#8b8b95;
-  --line:#eeeeF2;
-  --hover:#f5f5f8;
-  --active:#f0edff;
-  --accent:#6c5ce7;
-  --danger:#e5484d;
+body{
+ margin:0;
+ font-family:Arial,sans-serif;
+ background:#fff6e8;
+ color:#3c2010;
 }
 
-html,body{
-  width:100%;
-  height:100%;
-  overflow:hidden;
-  font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
-  background:var(--bg);
-  color:var(--text);
-}
-
-button,input,textarea{
-  font:inherit;
-}
-
-button{
-  border:0;
-  background:none;
-  cursor:pointer;
-}
-
-.app{
-  display:flex;
-  width:100%;
-  height:100vh;
-}
-
-/* ================= SIDEBAR ================= */
-
-.sidebar{
-  width:76px;
-  min-width:76px;
-  height:100vh;
-  border-right:1px solid var(--line);
-  background:#fff;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  padding:13px 8px;
-  z-index:20;
-}
-
-.logo-btn{
-  width:48px;
-  height:48px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  margin-bottom:14px;
-  border-radius:15px;
-}
-
-.logo-btn:hover{
-  background:var(--hover);
-}
-
-.logo-svg{
-  width:40px;
-  height:40px;
-}
-
-.apps{
-  width:100%;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:6px;
-  overflow-y:auto;
-  overflow-x:hidden;
-  scrollbar-width:none;
-}
-
-.apps::-webkit-scrollbar{
-  display:none;
-}
-
-.app-item{
-  width:54px;
-  height:54px;
-  border-radius:15px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  position:relative;
-  transition:.16s ease;
-  cursor:pointer;
-  user-select:none;
-}
-
-.app-item:hover{
-  background:var(--hover);
-}
-
-.app-item.active{
-  background:var(--active);
-}
-
-.app-item.active::before{
-  content:"";
-  position:absolute;
-  left:-8px;
-  width:3px;
-  height:22px;
-  border-radius:0 5px 5px 0;
-  background:var(--accent);
-}
-
-.app-icon{
-  width:29px;
-  height:29px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  border-radius:9px;
-  overflow:hidden;
-}
-
-.app-icon svg{
-  width:100%;
-  height:100%;
-}
-
-.app-letter{
-  width:29px;
-  height:29px;
-  border-radius:9px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  color:#fff;
-  font-size:13px;
-  font-weight:700;
-}
-
-.tooltip{
-  position:absolute;
-  left:65px;
-  top:50%;
-  transform:translateY(-50%);
-  background:#17171b;
-  color:#fff;
-  padding:7px 10px;
-  border-radius:8px;
-  font-size:12px;
-  white-space:nowrap;
-  opacity:0;
-  pointer-events:none;
-  transition:.12s;
-  z-index:100;
-}
-
-.app-item:hover .tooltip{
-  opacity:1;
-}
-
-.add-app{
-  width:48px;
-  height:48px;
-  margin-top:10px;
-  border:1px dashed #d5d5dc;
-  border-radius:14px;
-  color:#686872;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:24px;
-  transition:.15s;
-}
-
-.add-app:hover{
-  background:var(--hover);
-  color:var(--accent);
-  border-color:var(--accent);
-}
-
-.sidebar-spacer{
-  flex:1;
-}
-
-.bottom-tools{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:6px;
-  padding-top:12px;
-  border-top:1px solid var(--line);
-}
-
-.tool{
-  width:54px;
-  height:50px;
-  border-radius:14px;
-  color:#777781;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  position:relative;
-}
-
-.tool:hover{
-  background:var(--hover);
-  color:#222;
-}
-
-.tool.active{
-  background:var(--active);
-  color:var(--accent);
-}
-
-.tool svg{
-  width:21px;
-  height:21px;
-}
-
-/* ================= MAIN ================= */
-
-.main{
-  flex:1;
-  min-width:0;
-  height:100vh;
-  display:flex;
-  flex-direction:column;
-  background:#fff;
-}
-
-.topbar{
-  height:64px;
-  min-height:64px;
-  border-bottom:1px solid var(--line);
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:0 24px;
-}
-
-.page-title{
-  font-size:15px;
-  font-weight:650;
-}
-
-.top-actions{
-  display:flex;
-  align-items:center;
-  gap:8px;
-}
-
-.search-btn{
-  width:38px;
-  height:38px;
-  border:1px solid var(--line);
-  border-radius:11px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  color:#5e5e68;
-}
-
-.search-btn:hover{
-  background:var(--hover);
-  color:#222;
-}
-
-.search-btn svg{
-  width:19px;
-  height:19px;
-}
+button{cursor:pointer}
 
-.content{
-  flex:1;
-  overflow:auto;
-  position:relative;
-}
-
-/* ================= HOME ================= */
-
-.home{
-  width:100%;
-  height:100%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
-}
+/* HERO */
 
-.home-message{
-  color:#777781;
-  font-size:15px;
-  letter-spacing:-.1px;
+.hero{
+ text-align:center;
+ padding:25px 15px 35px;
+ color:white;
+ background:linear-gradient(135deg,#170805,#70200d,#d28b27);
 }
 
-.home-message .home-mark{
-  width:42px;
-  height:42px;
-  margin:0 auto 16px;
-  opacity:.55;
+.om{
+ color:#ffd45c;
+ font-size:25px;
+ font-weight:bold;
 }
 
-.home-message p{
-  font-weight:500;
+.shiva-box{
+ max-width:340px;
+ margin:20px auto;
+ perspective:1000px;
 }
 
-/* ================= NOTES ================= */
-
-.panel{
-  width:100%;
-  height:100%;
-  padding:30px;
-  overflow:auto;
-}
-
-.panel-head{
-  max-width:900px;
-  margin:0 auto 22px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
+.shiva{
+ width:100%;
+ height:300px;
+ object-fit:cover;
+ border-radius:22px;
+ border:3px solid #ffd76b;
+ box-shadow:0 15px 30px #0009,0 0 25px #ffbb3580;
+ transform:rotateY(-5deg);
+ transition:.4s;
 }
 
-.panel-title{
-  font-size:22px;
-  font-weight:700;
+.shiva:hover{
+ transform:rotateY(0deg) scale(1.03);
 }
 
-.panel-subtitle{
-  color:#888891;
-  font-size:13px;
-  margin-top:5px;
+.hero h1{
+ color:#ffe5a0;
+ font-size:29px;
+ margin:15px 0 8px;
+ text-shadow:2px 3px 5px #000;
 }
 
-.note-wrap{
-  max-width:900px;
-  margin:auto;
-}
+.hero p{line-height:1.7}
 
-.notes{
-  width:100%;
-  min-height:420px;
-  resize:none;
-  outline:none;
-  border:1px solid var(--line);
-  border-radius:16px;
-  padding:20px;
-  font-size:15px;
-  line-height:1.7;
-  color:#222;
-  background:#fff;
-  box-shadow:0 3px 18px rgba(20,20,30,.035);
-}
+/* TEMPLE */
 
-.notes:focus{
-  border-color:#d8d3fa;
+.temple{
+ max-width:950px;
+ margin:25px auto;
+ padding:0 15px;
+ text-align:center;
 }
 
-.save-status{
-  font-size:12px;
-  color:#9999a2;
-  margin-top:9px;
+.temple img{
+ width:100%;
+ height:250px;
+ object-fit:cover;
+ border-radius:18px;
+ box-shadow:0 7px 25px #0003;
 }
 
-/* ================= SAVED ================= */
+.temple h2{color:#9b3916}
 
-.saved-list{
-  max-width:900px;
-  margin:auto;
+.temple p{
+ line-height:1.8;
+ color:#684b36;
 }
 
-.saved-empty{
-  border:1px dashed #dddde4;
-  border-radius:15px;
-  padding:35px;
-  text-align:center;
-  color:#9999a2;
-}
-
-.saved-item{
-  border:1px solid var(--line);
-  border-radius:14px;
-  padding:15px;
-  margin-bottom:10px;
-  display:flex;
-  align-items:center;
-  gap:14px;
-}
+/* COMMON */
 
-.saved-info{
-  flex:1;
-  min-width:0;
+.container{
+ max-width:950px;
+ margin:auto;
+ padding:12px;
 }
 
-.saved-name{
-  font-size:14px;
-  font-weight:650;
+.card{
+ background:white;
+ padding:20px;
+ margin:20px 0;
+ border-radius:18px;
+ box-shadow:0 5px 20px #5b32151a;
 }
 
-.saved-url{
-  color:#92929b;
-  font-size:12px;
-  margin-top:4px;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
+.card h2{
+ color:#873719;
+ text-align:center;
 }
 
-.saved-open{
-  padding:8px 12px;
-  border-radius:9px;
-  background:#f3f2ff;
-  color:var(--accent);
-  font-size:12px;
-  font-weight:600;
-}
+/* PREMIUM CALENDAR */
 
-.delete-btn{
-  width:32px;
-  height:32px;
-  border-radius:9px;
-  color:#aaa;
+.calendar-card{
+ background:linear-gradient(145deg,#fff9ed,#fff0d2);
+ border:2px solid #d9a64e;
+ border-radius:20px;
+ padding:15px;
+ box-shadow:0 8px 25px #8b4a1720;
 }
 
-.delete-btn:hover{
-  background:#fff0f0;
-  color:var(--danger);
+.calendar-header{
+ text-align:center;
+ background:linear-gradient(135deg,#541809,#a64c1b,#d59a3b);
+ color:white;
+ border-radius:15px;
+ padding:18px 10px;
+ margin-bottom:15px;
 }
-
-/* ================= SETTINGS ================= */
 
-.settings-card{
-  max-width:900px;
-  margin:auto;
-  border:1px solid var(--line);
-  border-radius:17px;
-  overflow:hidden;
+.calendar-header .om-small{
+ font-size:23px;
+ color:#ffdf83;
 }
 
-.setting-row{
-  min-height:65px;
-  padding:15px 18px;
-  border-bottom:1px solid var(--line);
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:15px;
+.calendar-header h2{
+ color:#ffe4a0;
+ margin:8px 0;
+ font-size:24px;
 }
 
-.setting-row:last-child{
-  border-bottom:0;
+.calendar-header p{
+ margin:5px;
+ font-size:13px;
 }
 
-.setting-name{
-  font-size:14px;
-  font-weight:600;
+.calendar{
+ width:100%;
+ border-collapse:separate;
+ border-spacing:5px;
+ table-layout:fixed;
 }
 
-.setting-desc{
-  color:#92929b;
-  font-size:12px;
-  margin-top:4px;
+.calendar th{
+ background:#783116;
+ color:white;
+ padding:12px 2px;
+ border-radius:9px;
+ font-size:12px;
 }
 
-.setting-button{
-  padding:9px 13px;
-  border:1px solid #e1e1e6;
-  border-radius:9px;
-  font-size:12px;
-  font-weight:600;
+.calendar td{
+ height:65px;
+ background:#fff;
+ border:1px solid #edd5ad;
+ border-radius:11px;
+ text-align:center;
+ vertical-align:middle;
+ font-size:15px;
+ font-weight:bold;
+ color:#50321d;
+ cursor:pointer;
+ transition:.2s;
 }
 
-.setting-button:hover{
-  background:#f7f7f9;
+.calendar td:hover:not(.empty){
+ background:#ffedc9;
+ transform:scale(1.04);
 }
 
-.setting-button.danger{
-  color:var(--danger);
+.calendar td.empty{
+ background:transparent;
+ border:0;
+ cursor:default;
 }
 
-/* ================= SEARCH ================= */
-
-.search-overlay{
-  position:fixed;
-  inset:0;
-  background:rgba(20,20,25,.14);
-  backdrop-filter:blur(3px);
-  display:none;
-  align-items:flex-start;
-  justify-content:center;
-  padding-top:92px;
-  z-index:200;
+.calendar td.monday{
+ background:#dcf3d9;
+ border:2px solid #77b96e;
+ color:#17632a;
 }
 
-.search-overlay.show{
-  display:flex;
+.calendar td.monday .lamp{
+ display:block;
+ font-size:15px;
+ margin-top:3px;
 }
 
-.search-box{
-  width:min(520px,calc(100% - 30px));
-  background:#fff;
-  border:1px solid #e8e8ed;
-  border-radius:17px;
-  box-shadow:0 18px 55px rgba(0,0,0,.13);
-  overflow:hidden;
+.calendar td.today{
+ outline:3px solid #dc9225;
+ background:#ffe4a0;
 }
 
-.search-input-wrap{
-  height:62px;
-  display:flex;
-  align-items:center;
-  gap:12px;
-  padding:0 18px;
+.calendar td.selected{
+ background:#f4c86c;
+ border:2px solid #a34c16;
 }
 
-.search-input-wrap svg{
-  width:20px;
-  color:#777;
+.calendar-note{
+ text-align:center;
+ margin-top:15px;
+ color:#77512d;
+ font-size:13px;
+ line-height:1.8;
 }
 
-.search-input{
-  flex:1;
-  border:0;
-  outline:0;
-  font-size:15px;
-  color:#222;
+.calendar-legend{
+ display:flex;
+ justify-content:center;
+ gap:18px;
+ flex-wrap:wrap;
+ margin-top:12px;
+ font-size:13px;
 }
 
-.search-input::placeholder{
-  color:#aaaab2;
+.legend-item{
+ display:flex;
+ align-items:center;
+ gap:5px;
 }
 
-.search-hint{
-  border-top:1px solid var(--line);
-  padding:11px 18px;
-  color:#9999a2;
-  font-size:11px;
+.legend-box{
+ width:15px;
+ height:15px;
+ border-radius:4px;
+ display:inline-block;
 }
 
-/* ================= MODAL ================= */
+.green-box{background:#dcf3d9;border:1px solid #77b96e}
+.gold-box{background:#ffe4a0;border:1px solid #dc9225}
 
-.modal-bg{
-  position:fixed;
-  inset:0;
-  background:rgba(20,20,25,.25);
-  backdrop-filter:blur(3px);
-  display:none;
-  align-items:center;
-  justify-content:center;
-  padding:20px;
-  z-index:300;
-}
+/* DATE POPUP */
 
-.modal-bg.show{
-  display:flex;
+.date-popup{
+ display:none;
+ position:fixed;
+ inset:0;
+ background:#0009;
+ z-index:2000;
+ padding:15px;
 }
 
-.modal{
-  width:min(440px,100%);
-  background:#fff;
-  border-radius:20px;
-  box-shadow:0 25px 70px rgba(0,0,0,.18);
-  padding:22px;
+.date-box{
+ max-width:380px;
+ background:#fff9ed;
+ margin:100px auto;
+ padding:25px;
+ border-radius:18px;
+ border:2px solid #d9a64e;
+ text-align:center;
 }
 
-.modal-head{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  margin-bottom:20px;
-}
+.date-box h3{color:#873719}
 
-.modal-title{
-  font-size:18px;
-  font-weight:700;
+.date-box button{
+ background:#873719;
+ color:white;
+ border:0;
+ padding:11px 25px;
+ border-radius:8px;
 }
 
-.close{
-  width:34px;
-  height:34px;
-  border-radius:9px;
-  color:#888;
-}
+/* KIT CARDS */
 
-.close:hover{
-  background:#f5f5f7;
+.kits{
+ display:grid;
+ grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+ gap:20px;
 }
 
-.form-group{
-  margin-bottom:14px;
+.kit{
+ text-align:center;
+ padding:22px 15px;
+ border:2px solid #e9bb64;
+ border-radius:18px;
+ background:linear-gradient(145deg,#fffaf0,#ffe8bd);
+ box-shadow:0 5px 15px #0001;
+ transition:.3s;
 }
 
-.form-label{
-  display:block;
-  font-size:12px;
-  font-weight:600;
-  color:#55555e;
-  margin-bottom:7px;
+.kit:hover{
+ transform:translateY(-5px);
+ box-shadow:0 10px 20px #0002;
 }
 
-.form-input{
-  width:100%;
-  height:44px;
-  border:1px solid #e4e4e9;
-  border-radius:10px;
-  outline:none;
-  padding:0 12px;
-  font-size:13px;
-}
+.kit-icon{font-size:65px}
 
-.form-input:focus{
-  border-color:#bdb5fa;
+.kit h3{
+ color:#813719;
+ font-size:22px;
 }
 
-.form-actions{
-  display:flex;
-  gap:9px;
-  margin-top:20px;
+.price{
+ color:#bd301d;
+ font-size:34px;
+ font-weight:bold;
+ margin:15px;
 }
 
 .btn{
-  flex:1;
-  height:44px;
-  border-radius:10px;
-  font-size:13px;
-  font-weight:650;
+ border:0;
+ padding:12px 18px;
+ border-radius:9px;
+ font-weight:bold;
+ font-size:14px;
+ margin:5px;
 }
 
-.btn-secondary{
-  border:1px solid #e2e2e7;
+.details-btn{
+ background:white;
+ border:2px solid #873719;
+ color:#873719;
 }
 
-.btn-primary{
-  background:#17171b;
-  color:#fff;
+.select-btn{
+ background:#873719;
+ color:white;
 }
 
-.btn-primary:hover{
-  background:#000;
+/* KIT DETAILS POPUP */
+
+.modal{
+ display:none;
+ position:fixed;
+ inset:0;
+ background:#000b;
+ z-index:1000;
+ padding:12px;
+ overflow-y:auto;
 }
 
-/* ================= MOBILE ================= */
-
-@media(max-width:650px){
-  .sidebar{
-    width:64px;
-    min-width:64px;
-    padding:10px 5px;
-  }
-
-  .logo-btn{
-    width:44px;
-    height:44px;
-  }
-
-  .app-item{
-    width:48px;
-    height:48px;
-  }
-
-  .tool{
-    width:48px;
-    height:46px;
-  }
-
-  .add-app{
-    width:44px;
-    height:44px;
-  }
-
-  .topbar{
-    height:58px;
-    min-height:58px;
-    padding:0 15px;
-  }
-
-  .panel{
-    padding:20px 14px;
-  }
-
-  .home-message{
-    padding:20px;
-  }
-
-  .notes{
-    min-height:calc(100vh - 150px);
-  }
-
-  .tooltip{
-    display:none;
-  }
-}
-</style>
-</head>
-
-<body>
-
-<div class="app">
-
-  <!-- SIDEBAR -->
-  <aside class="sidebar">
-
-    <!-- LOOPIN LOGO -->
-    <button class="logo-btn" onclick="showHome()" title="LOOPIN">
-      <svg class="logo-svg" viewBox="0 0 50 50" fill="none">
-        <rect x="3" y="3" width="44" height="44" rx="14" fill="#17171B"/>
-        <path d="M13 25C13 17.8 18.5 13 25.2 13C31.8 13 37 17.7 37 24.9C37 32 31.8 37 25 37C18.4 37 13 32.1 13 25Z"
-              stroke="white" stroke-width="3.2"/>
-        <path d="M20 25C20 21.9 22.2 20 25.2 20C28.2 20 30 22 30 25C30 28 28.1 30 25 30C22.1 30 20 28 20 25Z"
-              stroke="#8B7CFF" stroke-width="2.6"/>
-        <circle cx="35.5" cy="14.5" r="3" fill="#8B7CFF"/>
-      </svg>
-    </button>
-
-    <div class="apps" id="apps"></div>
-
-    <button class="add-app" onclick="openAddApp()" title="Add App">+</button>
-
-    <div class="sidebar-spacer"></div>
-
-    <div class="bottom-tools">
-
-      <button class="tool" id="notesTool" onclick="openNotes()" title="Notes">
-        <svg viewBox="0 0 24 24" fill="none">
-          <path d="M6 3.5h9l3 3V20.5H6A2 2 0 0 1 4 18.5v-13a2 2 0 0 1 2-2Z"
-                stroke="currentColor" stroke-width="1.7"/>
-          <path d="M14 3.5v4h4M8 11h6M8 14.5h6M8 18h4"
-                stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
-        </svg>
-        <span class="tooltip">Notes</span>
-      </button>
-
-      <button class="tool" id="savedTool" onclick="openSaved()" title="Saved URLs">
-        <svg viewBox="0 0 24 24" fill="none">
-          <path d="M7 5.5A2.5 2.5 0 0 1 9.5 3h9A2.5 2.5 0 0 1 21 5.5v9A2.5 2.5 0 0 1 18.5 17h-9A2.5 2.5 0 0 1 7 14.5v-9Z"
-                stroke="currentColor" stroke-width="1.7"/>
-          <path d="M4 8v10.5A2.5 2.5 0 0 0 6.5 21H17M10 8.5h6M10 12h6"
-                stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
-        </svg>
-        <span class="tooltip">Saved URLs</span>
-      </button>
-
-      <button class="tool" id="settingsTool" onclick="openSettings()" title="Settings">
-        <svg viewBox="0 0 24 24" fill="none">
-          <path d="M12 8.5A3.5 3.5 0 1 0 12 15.5A3.5 3.5 0 0 0 12 8.5Z"
-                stroke="currentColor" stroke-width="1.7"/>
-          <path d="M19 13.3a7.3 7.3 0 0 0 0-2.6l2-1.5-2-3.4-2.4 1a8 8 0 0 0-2.2-1.3L14 3h-4l-.4 2.5a8 8 0 0 0-2.2 1.3L5 5.8 3 9.2l2 1.5a7.3 7.3 0 0 0 0 2.6l-2 1.5 2 3.4 2.4-1a8 8 0 0 0 2.2 1.3L10 21h4l.4-2.5a8 8 0 0 0 2.2-1.3l2.4 1 2-3.4-2-1.5Z"
-                stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
-        </svg>
-        <span class="tooltip">Settings</span>
-      </button>
-
-    </div>
-  </aside>
-
-  <!-- MAIN -->
-  <main class="main">
-
-    <header class="topbar">
-      <div class="page-title" id="pageTitle">LOOPIN</div>
-
-      <div class="top-actions">
-        <button class="search-btn" onclick="openSearch()" title="Search Google">
-          <svg viewBox="0 0 24 24" fill="none">
-            <circle cx="10.8" cy="10.8" r="6.8"
-                    stroke="currentColor" stroke-width="1.8"/>
-            <path d="m16 16 5 5"
-                  stroke="currentColor" stroke-width="1.8"
-                  stroke-linecap="round"/>
-          </svg>
-        </button>
-      </div>
-    </header>
-
-    <section class="content" id="content">
-
-      <!-- HOME -->
-      <div class="home" id="homePage">
-        <div class="home-message">
-
-          <svg class="home-mark" viewBox="0 0 50 50" fill="none">
-            <rect x="4" y="4" width="42" height="42" rx="13" fill="#17171B"/>
-            <path d="M14 25C14 18.5 19 14 25.2 14C31.3 14 36 18.5 36 25C36 31.5 31.2 36 25 36C19 36 14 31.5 14 25Z"
-                  stroke="white" stroke-width="3"/>
-            <circle cx="34" cy="15.5" r="3" fill="#8B7CFF"/>
-          </svg>
-
-          <p>Select an app from the left to get started.</p>
-
-        </div>
-      </div>
-
-      <!-- NOTES -->
-      <div class="panel" id="notesPage" style="display:none">
-
-        <div class="panel-head">
-          <div>
-            <div class="panel-title">Notes</div>
-            <div class="panel-subtitle">Your notes are saved automatically.</div>
-          </div>
-        </div>
-
-        <div class="note-wrap">
-          <textarea
-            id="notes"
-            class="notes"
-            placeholder="Start writing..."
-            oninput="saveNotes()"></textarea>
-
-          <div class="save-status" id="saveStatus">
-            Saved locally
-          </div>
-        </div>
-
-      </div>
-
-      <!-- SAVED -->
-      <div class="panel" id="savedPage" style="display:none">
-
-        <div class="panel-head">
-          <div>
-            <div class="panel-title">Saved URLs</div>
-            <div class="panel-subtitle">Keep useful websites in one place.</div>
-          </div>
-        </div>
-
-        <div class="saved-list" id="savedList"></div>
-
-      </div>
-
-      <!-- SETTINGS -->
-      <div class="panel" id="settingsPage" style="display:none">
-
-        <div class="panel-head">
-          <div>
-            <div class="panel-title">Settings</div>
-            <div class="panel-subtitle">Customize your LOOPIN workspace.</div>
-          </div>
-        </div>
-
-        <div class="settings-card">
-
-          <div class="setting-row">
-            <div>
-              <div class="setting-name">Apps</div>
-              <div class="setting-desc">
-                Restore the default app arrangement.
-              </div>
-            </div>
-
-            <button class="setting-button" onclick="resetApps()">
-              Reset Apps
-            </button>
-          </div>
-
-          <div class="setting-row">
-            <div>
-              <div class="setting-name">Notes</div>
-              <div class="setting-desc">
-                Delete your locally stored notes.
-              </div>
-            </div>
-
-            <button class="setting-button danger" onclick="clearNotes()">
-              Clear Notes
-            </button>
-          </div>
-
-          <div class="setting-row">
-            <div>
-              <div class="setting-name">Saved URLs</div>
-              <div class="setting-desc">
-                Remove all saved website links.
-              </div>
-            </div>
-
-            <button class="setting-button danger" onclick="clearSaved()">
-              Clear URLs
-            </button>
-          </div>
-
-        </div>
-
-      </div>
-
-    </section>
-
-  </main>
-</div>
-
-
-<!-- SEARCH -->
-<div class="search-overlay" id="searchOverlay" onclick="closeSearchOutside(event)">
-
-  <div class="search-box">
-
-    <div class="search-input-wrap">
-
-      <svg viewBox="0 0 24 24" fill="none">
-        <circle cx="10.8" cy="10.8" r="6.8"
-                stroke="currentColor" stroke-width="1.8"/>
-        <path d="m16 16 5 5"
-              stroke="currentColor"
-              stroke-width="1.8"
-              stroke-linecap="round"/>
-      </svg>
-
-      <input
-        id="searchInput"
-        class="search-input"
-        placeholder="Search Google..."
-        autocomplete="off"
-        onkeydown="handleSearch(event)"
-      >
-
-    </div>
-
-    <div class="search-hint">
-      Type your search and press Enter · Esc to close
-    </div>
-
-  </div>
-
-</div>
-
-
-<!-- ADD APP MODAL -->
-<div class="modal-bg" id="addModal">
-
-  <div class="modal">
-
-    <div class="modal-head">
-      <div class="modal-title">Add App</div>
-
-      <button class="close" onclick="closeAddApp()">✕</button>
-    </div>
-
-    <div class="form-group">
-      <label class="form-label">App name</label>
-      <input
-        id="appName"
-        class="form-input"
-        placeholder="Example: Notion"
-      >
-    </div>
-
-    <div class="form-group">
-      <label class="form-label">Website URL</label>
-      <input
-        id="appUrl"
-        class="form-input"
-        placeholder="https://example.com"
-      >
-    </div>
-
-    <div class="form-group">
-      <label class="form-label">Icon letter</label>
-      <input
-        id="appLetter"
-        class="form-input"
-        maxlength="2"
-        placeholder="N"
-      >
-    </div>
-
-    <div class="form-actions">
-
-      <button class="btn btn-secondary" onclick="closeAddApp()">
-        Cancel
-      </button>
-
-      <button class="btn btn-primary" onclick="addApp()">
-        Add App
-      </button>
-
-    </div>
-
-  </div>
-
-</div>
-
-
-<script>
-
-/* =========================================================
-   DEFAULT APPS
-========================================================= */
-
-const defaultApps = [
-
-  {
-    id:"whatsapp",
-    name:"WhatsApp",
-    url:"https://web.whatsapp.com/",
-    type:"whatsapp"
-  },
-
-  {
-    id:"instagram",
-    name:"Instagram",
-    url:"https://www.instagram.com/",
-    type:"instagram"
-  },
-
-  {
-    id:"gmail",
-    name:"Gmail",
-    url:"https://mail.google.com/",
-    type:"gmail"
-  },
-
-  {
-    id:"outlook",
-    name:"Outlook",
-    url:"https://outlook.live.com/",
-    type:"outlook"
-  },
-
-  {
-    id:"linkedin",
-    name:"LinkedIn",
-    url:"https://www.linkedin.com/",
-    type:"linkedin"
-  },
-
-  {
-    id:"copilot",
-    name:"Copilot",
-    url:"https://copilot.microsoft.com/",
-    type:"copilot"
-  },
-
-  {
-    id:"chatgpt",
-    name:"ChatGPT",
-    url:"https://chatgpt.com/",
-    type:"chatgpt"
-  }
-
-];
-
-
-/* =========================================================
-   ICONS
-========================================================= */
-
-function icon(type){
-
-  if(type==="whatsapp"){
-    return `
-      <svg viewBox="0 0 32 32">
-        <circle cx="16" cy="16" r="15" fill="#25D366"/>
-        <path d="M22.4 9.8A9 9 0 0 0 7 16.2c0 1.6.4 3.1 1.2 4.4L7 25l4.5-1.2a9 9 0 0 0 4.2 1c5 0 9-4 9-9 0-2.3-.9-4.4-2.3-6Z"
-              fill="white"/>
-        <path d="M12.1 11.8c.3-.3.6-.3.9-.1l1.3 1c.3.2.4.5.2.8l-.6.8c.8 1.5 2 2.5 3.5 3.2l.7-.7c.2-.2.6-.3.9-.1l1.4.8c.3.2.4.5.3.8-.4 1.2-1.4 1.8-2.5 1.5-3.2-.8-5.9-3-7.4-6-.5-.9-.2-1.7.3-2Z"
-              fill="#25D366"/>
-      </svg>
-    `;
-  }
-
-  if(type==="instagram"){
-    return `
-      <svg viewBox="0 0 32 32">
-        <defs>
-          <linearGradient id="ig" x1="0" y1="1" x2="1" y2="0">
-            <stop stop-color="#FEDA75"/>
-            <stop offset=".35" stop-color="#FA7E1E"/>
-            <stop offset=".7" stop-color="#D62976"/>
-            <stop offset="1" stop-color="#4F5BD5"/>
-          </linearGradient>
-        </defs>
-        <rect x="2" y="2" width="28" height="28" rx="8" fill="url(#ig)"/>
-        <rect x="8" y="8" width="16" height="16" rx="5"
-              fill="none" stroke="white" stroke-width="2"/>
-        <circle cx="16" cy="16" r="4"
-                fill="none" stroke="white" stroke-width="2"/>
-        <circle cx="22" cy="10" r="1.4" fill="white"/>
-      </svg>
-    `;
-  }
-
-  if(type==="gmail"){
-    return `
-      <svg viewBox="0 0 32 32">
-        <rect x="3" y="5" width="26" height="22" rx="5" fill="#fff"/>
-        <path d="M5 8l11 8L27 8v14H5V8Z"
-              fill="none" stroke="#EA4335" stroke-width="2.5"/>
-        <path d="M5 9l11 8 11-8"
-              fill="none" stroke="#4285F4" stroke-width="2.5"/>
-      </svg>
-    `;
-  }
-
-  if(type==="outlook"){
-    return `
-      <svg viewBox="0 0 32 32">
-        <rect x="3" y="7" width="19" height="18" rx="3" fill="#0A64D8"/>
-        <path d="M16 9h10a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3H16V9Z"
-              fill="#1674E8"/>
-        <path d="M18 12l6 4 5-4"
-              fill="none" stroke="white" stroke-width="1.5"/>
-        <text x="7" y="20" fill="white"
-              font-size="10" font-weight="700">O</text>
-      </svg>
-    `;
-  }
-
-  if(type==="linkedin"){
-    return `
-      <svg viewBox="0 0 32 32">
-        <rect x="2" y="2" width="28" height="28" rx="5" fill="#0A66C2"/>
-        <circle cx="9" cy="10" r="2" fill="white"/>
-        <path d="M7.5 14v10M13 24V14m0 4c.5-3 7-4 7 1v5"
-              stroke="white" stroke-width="2.2" stroke-linecap="round"/>
-      </svg>
-    `;
-  }
-
-  if(type==="copilot"){
-    return `
-      <svg viewBox="0 0 32 32">
-        <defs>
-          <linearGradient id="cp" x1="0" y1="0" x2="1" y2="1">
-            <stop stop-color="#6D5DFB"/>
-            <stop offset="1" stop-color="#25C6DA"/>
-          </linearGradient>
-        </defs>
-        <rect x="2" y="2" width="28" height="28" rx="9" fill="url(#cp)"/>
-        <path d="M9 18c1-5 4-7 7-4l2 2c2 2 4 1 5-2"
-              fill="none" stroke="white" stroke-width="2.2"
-              stroke-linecap="round"/>
-        <path d="M9 21c2 2 4 2 6 0l2-2c2-2 4-1 6 1"
-              fill="none" stroke="white" stroke-width="2.2"
-              stroke-linecap="round"/>
-      </svg>
-    `;
-  }
-
-  if(type==="chatgpt"){
-    return `
-      <svg viewBox="0 0 32 32">
-        <rect x="2" y="2" width="28" height="28" rx="9" fill="#111"/>
-        <path d="M16 8a5 5 0 0 1 4.8 6.2A5 5 0 0 1 23 23a5 5 0 0 1-7 1.8A5 5 0 0 1 8.2 20a5 5 0 0 1 1-7.2A5 5 0 0 1 16 8Z"
-              fill="none" stroke="white" stroke-width="1.5"/>
-        <path d="M12 11l8 4m-9 6 9-6m-4 9V15m-7 2 8 4"
-              stroke="white" stroke-width="1.2"
-              stroke-linecap="round"/>
-      </svg>
-    `;
-  }
-
-  return "";
+.modal-content{
+ background:#fffaf0;
+ max-width:480px;
+ margin:25px auto;
+ padding:22px;
+ border-radius:18px;
+ border:3px solid #d59b47;
+ position:relative;
 }
 
-
-/* =========================================================
-   STORAGE
-========================================================= */
-
-const APP_KEY = "loopin_apps_v3";
-const NOTES_KEY = "loopin_notes_v3";
-const SAVED_KEY = "loopin_saved_v3";
-
-
-let apps = loadApps();
-
-
-function loadApps(){
-
-  try{
-
-    const saved = localStorage.getItem(APP_KEY);
-
-    if(saved){
-      return JSON.parse(saved);
-    }
-
-  }catch(e){}
-
-  return JSON.parse(JSON.stringify(defaultApps));
+.close{
+ position:absolute;
+ right:13px;
+ top:8px;
+ font-size:29px;
+ border:0;
+ background:none;
+ color:#873719;
 }
 
+.modal-content h2{
+ color:#873719;
+ text-align:center;
+ margin:18px 20px;
+}
 
-function saveApps(){
+.items-list{
+ display:flex;
+ flex-direction:column;
+ gap:9px;
+}
 
-  localStorage.setItem(APP_KEY,JSON.stringify(apps));
+.item{
+ display:flex;
+ align-items:center;
+ gap:12px;
+ background:white;
+ border:1px solid #ecd2aa;
+ padding:12px;
+ border-radius:10px;
+}
+
+.item-icon{
+ font-size:25px;
+ width:35px;
+ text-align:center;
+}
+
+.item-name{
+ font-size:15px;
+ font-weight:bold;
+}
+
+.modal-price{
+ text-align:center;
+ color:#bd301d;
+ font-size:27px;
+ font-weight:bold;
+ margin:20px;
+}
+
+.modal-select{
+ width:100%;
+ background:#873719;
+ color:white;
+ padding:14px;
+ border:0;
+ border-radius:9px;
+ font-weight:bold;
+ font-size:16px;
+}
+
+/* BOOKING */
+
+label{
+ display:block;
+ margin:13px 0 6px;
+ font-weight:bold;
+}
+
+input,textarea,select{
+ width:100%;
+ padding:13px;
+ border:1px solid #d8c5b3;
+ border-radius:9px;
+ font-size:15px;
+ background:#fffdf9;
+}
+
+textarea{min-height:85px}
+
+.qty-row{
+ display:flex;
+ align-items:center;
+ gap:15px;
+ margin-top:12px;
+}
+
+.qty-row button{
+ width:40px;
+ height:38px;
+ border:0;
+ border-radius:8px;
+ background:#873719;
+ color:white;
+ font-size:22px;
+}
+
+.qty-row span{
+ font-size:20px;
+ font-weight:bold;
+}
+
+.total{
+ text-align:center;
+ font-size:25px;
+ color:#8b3516;
+ font-weight:bold;
+ margin:20px;
+}
+
+.action{
+ width:100%;
+ padding:15px;
+ border:0;
+ border-radius:9px;
+ color:white;
+ font-size:16px;
+ font-weight:bold;
+ margin-top:12px;
+}
+
+.whatsapp{background:#159447}
+.cod{background:#873719}
+
+button:disabled{
+ opacity:.6;
+ cursor:not-allowed;
+}
+
+#message{
+ text-align:center;
+ font-weight:bold;
+ margin-top:15px;
+ overflow-wrap:anywhere;
+}
+
+footer{
+ background:#38140c;
+ color:#ffe5a6;
+ padding:22px;
+ text-align:center;
+ margin-top:30px;
+}
+
+/* MOBILE */
+
+@media(max-width:480px){
+
+ .hero h1{font-size:23px}
+ .shiva{height:250px}
+ .temple img{height:190px}
+ .card{padding:13px}
+ .calendar-card{padding:8px}
+ .calendar{border-spacing:3px}
+ .calendar th{font-size:10px;padding:10px 1px}
+ .calendar td{height:53px;font-size:13px}
+ .calendar td .lamp{font-size:12px}
+ .kit{padding:18px 10px}
+
+}
+</style></head><body><!-- HERO --><header class="hero"><div class="om">॥ ఓం నమః శివాయ ॥ ॐ</div><div class="shiva-box"><img class="shiva"
+src="https://commons.wikimedia.org/wiki/Special:FilePath/Adiyogi_Shiva_statue.jpg"
+alt="Lord Shiva"
+onerror="this.alt='Lord Shiva Image';">
+
+</div><h1>కార్తీక మాస పూజా కిట్</h1><p>KARTHIKA MASAM POOJA KIT</p><p>🙏 భక్తితో పూజించండి... శుభాలు పొందండి 🙏</p></header><!-- TEMPLE --><section class="temple"><img
+src="https://commons.wikimedia.org/wiki/Special:FilePath/Arunachaleswarar_Temple.jpg"
+alt="Shiva Temple">
+
+<h2>కార్తీక మాస మహత్యం</h2><p>
+కార్తీక మాసం శివకేశవులకు అత్యంత ప్రీతికరమైన పవిత్ర మాసం.
+ఈ మాసంలో దీపారాధన, పూజలు, ఉపవాసం మరియు దైవస్మరణ
+చేయడం విశేషమైన ఆధ్యాత్మిక ప్రాధాన్యత కలిగి ఉంటుంది.
+</p></section><main class="container"><!-- CALENDAR --><section class="card calendar-card"><div class="calendar-header"><div class="om-small">🕉️</div><h2>November 2026</h2><p>KARTHIKA MASAM CALENDAR</p><p>🙏 శివాయ నమః 🙏</p></div><table class="calendar"><thead>
+<tr>
+<th>MON</th>
+<th>TUE</th>
+<th>WED</th>
+<th>THU</th>
+<th>FRI</th>
+<th>SAT</th>
+<th>SUN</th>
+</tr>
+</thead><tbody id="calendarBody"></tbody></table><div class="calendar-legend"><div class="legend-item">
+<span class="legend-box green-box"></span>
+Monday
+</div><div class="legend-item">
+<span class="legend-box gold-box"></span>
+Today
+</div></div><p class="calendar-note">
+🪔 సోమవారం తేదీలకు ప్రత్యేక గుర్తింపు<br>
+తేదీపై క్లిక్ చేసి వివరాలు చూడండి.
+</p></section><!-- KIT SELECTION --><section class="card"><h2>🙏 Select Your Pooja Kit</h2><div class="kits"><div class="kit"><div class="kit-icon">🪔</div><h3>Mini Pooja Kit</h3><div class="price">₹49</div><p>Basic Pooja Kit</p><button class="btn details-btn"
+onclick="showDetails('mini')">
+View Details
+</button>
+
+<button class="btn select-btn"
+onclick="chooseKit('Mini Pooja Kit')">
+Select Kit
+</button>
+
+</div><div class="kit"><div class="kit-icon">🛕</div><h3>Regular Pooja Kit</h3><div class="price">₹99</div><p>Regular Pooja Kit</p><button class="btn details-btn"
+onclick="showDetails('regular')">
+View Details
+</button>
+
+<button class="btn select-btn"
+onclick="chooseKit('Regular Pooja Kit')">
+Select Kit
+</button>
+
+</div></div></section><!-- BOOKING --><section class="card" id="booking"><h2>Book Your Pooja Kit</h2><form id="bookingForm"><label>Customer Name</label>
+
+<input id="name" type="text"
+placeholder="Enter your name" required>
+
+<label>Mobile Number</label>
+
+<input id="mobile" type="tel"
+maxlength="10"
+inputmode="numeric"
+placeholder="10-digit mobile number"
+required>
+
+<label>Full Address</label>
+
+<textarea id="address"
+placeholder="Enter your full address"
+required></textarea><label>Select Pooja Kit</label>
+
+<select id="kit" onchange="updateTotal()"><option value="Mini Pooja Kit" data-price="49">
+Mini Pooja Kit - ₹49
+</option><option value="Regular Pooja Kit" data-price="99">
+Regular Pooja Kit - ₹99
+</option></select><label>Quantity</label>
+
+<div class="qty-row"><button type="button" onclick="changeQty(-1)">−</button>
+
+<span id="quantity">1</span>
+
+<button type="button" onclick="changeQty(1)">+</button>
+
+</div><div class="total" id="total">Total: ₹49</div><button type="button"
+class="action whatsapp"
+id="whatsappBtn"
+onclick="bookOrder('WhatsApp')">
+
+📱 Book Through WhatsApp
+
+</button><button type="button"
+class="action cod"
+id="codBtn"
+onclick="bookOrder('Cash on Delivery')">
+
+🚚 Cash on Delivery
+
+</button><div id="message"></div></form></section></main><footer>🙏 Karthika Masam Pooja Kit 🙏
+
+<p>Thank You For Choosing Us</p></footer><!-- DATE POPUP --><div class="date-popup" id="datePopup"
+onclick="if(event.target===this)closeDate()"><div class="date-box"><h3 id="dateTitle">Selected Date</h3><p id="dateInfo"></p><p>🪔 ఓం నమః శివాయ 🪔</p><button onclick="closeDate()">Close</button>
+
+</div></div><!-- MINI KIT DETAILS --><div class="modal" id="miniModal"
+onclick="if(event.target===this)closeDetails('miniModal')"><div class="modal-content"><button class="close"
+onclick="closeDetails('miniModal')">×</button>
+
+<h2>🪔 Mini Pooja Kit – ₹49</h2><div class="items-list"><div class="item"><span class="item-icon">🍌</span><span class="item-name">అరటిపండ్లు – 1</span></div><div class="item"><span class="item-icon">🟡</span><span class="item-name">పసుపు – 5 గ్రా</span></div><div class="item"><span class="item-icon">🔴</span><span class="item-name">కుంకుమ – 5 గ్రా</span></div><div class="item"><span class="item-icon">🌾</span><span class="item-name">అక్షింతలు – 10 గ్రా</span></div><div class="item"><span class="item-icon">🔥</span><span class="item-name">కర్పూరం – 2 గ్రా</span></div><div class="item"><span class="item-icon">🪔</span><span class="item-name">అగరబత్తీలు – చిన్న ప్యాక్</span></div><div class="item"><span class="item-icon">🧵</span><span class="item-name">పత్తి వత్తులు – చిన్న ప్యాక్</span></div><div class="item"><span class="item-icon">🏺</span><span class="item-name">మట్టి ప్రమిదలు – 2</span></div><div class="item"><span class="item-icon">🍯</span><span class="item-name">బెల్లం – 20 గ్రా</span></div><div class="item"><span class="item-icon">🌸</span><span class="item-name">పూలు – చిన్న ప్యాక్</span></div><div class="item"><span class="item-icon">📦</span><span class="item-name">ప్యాకింగ్ – 1</span></div></div><div class="modal-price">Total Kit Price: ₹49</div><button class="modal-select"
+onclick="selectFromDetails('Mini Pooja Kit','miniModal')">
+
+Select Mini Kit – ₹49
+
+</button></div>
+</div><!-- REGULAR KIT DETAILS --><div class="modal" id="regularModal"
+onclick="if(event.target===this)closeDetails('regularModal')"><div class="modal-content"><button class="close"
+onclick="closeDetails('regularModal')">×</button>
+
+<h2>🛕 Regular Pooja Kit – ₹99</h2><div class="items-list"><div class="item"><span class="item-icon">🍌</span><span class="item-name">అరటిపండ్లు – 2</span></div><div class="item"><span class="item-icon">🟡</span><span class="item-name">పసుపు – 10 గ్రా</span></div><div class="item"><span class="item-icon">🔴</span><span class="item-name">కుంకుమ – 10 గ్రా</span></div><div class="item"><span class="item-icon">🌾</span><span class="item-name">అక్షింతలు – 20 గ్రా</span></div><div class="item"><span class="item-icon">🔥</span><span class="item-name">కర్పూరం – 4 గ్రా</span></div><div class="item"><span class="item-icon">🪔</span><span class="item-name">అగరబత్తీలు – 2 చిన్న ప్యాక్‌లు</span></div><div class="item"><span class="item-icon">🧵</span><span class="item-name">పత్తి వత్తులు – 2 ప్యాక్‌లు</span></div><div class="item"><span class="item-icon">🏺</span><span class="item-name">మట్టి ప్రమిదలు – 2</span></div><div class="item"><span class="item-icon">🍯</span><span class="item-name">బెల్లం – 40 గ్రా</span></div><div class="item"><span class="item-icon">🌸</span><span class="item-name">పూలు – 2 ప్యాక్‌లు</span></div><div class="item"><span class="item-icon">🧣</span><span class="item-name">పూజా వస్త్రం / నూలు – 1</span></div><div class="item"><span class="item-icon">📦</span><span class="item-name">ప్యాకింగ్ – 1</span></div></div><div class="modal-price">Total Kit Price: ₹99</div><button class="modal-select"
+onclick="selectFromDetails('Regular Pooja Kit','regularModal')">
+
+Select Regular Kit – ₹99
+
+</button></div>
+</div><script>
+
+/* SUPABASE */
+
+const SUPABASE_URL =
+"https://eaowxilhfzyukzetgqxo.supabase.co";
+
+const SUPABASE_KEY =
+"sb_publishable_Z3xsADypaOjX8GEQEOLUdg_vbxynHRx";
+
+const WHATSAPP_NUMBER = "919640467264";
+
+let quantity = 1;
+
+/* CALENDAR */
+
+function createCalendar(){
+
+const year = 2026;
+const month = 10; // November (0 = January)
+
+const firstDay = new Date(year,month,1).getDay();
+
+const daysInMonth = new Date(year,month+1,0).getDate();
+
+// Monday-first calendar
+const startDay = (firstDay + 6) % 7;
+
+const body = document.getElementById('calendarBody');
+
+body.innerHTML = '';
+
+let date = 1;
+
+for(let row=0;row<6;row++){
+
+const tr = document.createElement('tr');
+
+for(let col=0;col<7;col++){
+
+const td = document.createElement('td');
+
+const cellIndex = row*7+col;
+
+if(cellIndex < startDay || date > daysInMonth){
+
+td.className = 'empty';
+
+}else{
+
+const currentDate = date;
+
+td.innerHTML =
+'<span>' + currentDate + '</span>' +
+(col===0 ? '<span class="lamp">🪔</span>' : '');
+
+if(col===0){
+td.classList.add('monday');
+}
+
+const today = new Date();
+
+if(
+today.getFullYear()===year &&
+today.getMonth()===month &&
+today.getDate()===currentDate
+){
+td.classList.add('today');
+}
+
+td.onclick = function(){
+showDate(currentDate,col===0);
+};
+
+date++;
 
 }
 
-
-/* =========================================================
-   RENDER APPS
-========================================================= */
-
-function renderApps(){
-
-  const container = document.getElementById("apps");
-
-  container.innerHTML = "";
-
-  apps.forEach((app,index)=>{
-
-    const item = document.createElement("div");
-
-    item.className = "app-item";
-
-    item.draggable = true;
-
-    item.dataset.index = index;
-
-    item.title = app.name;
-
-    let visual = "";
-
-    if(app.type){
-
-      visual = `
-        <div class="app-icon">
-          ${icon(app.type)}
-        </div>
-      `;
-
-    }else{
-
-      visual = `
-        <div
-          class="app-letter"
-          style="background:${app.color || "#6c5ce7"}">
-          ${(app.letter || app.name.charAt(0)).toUpperCase()}
-        </div>
-      `;
-
-    }
-
-    item.innerHTML = `
-      ${visual}
-      <span class="tooltip">${escapeHTML(app.name)}</span>
-    `;
-
-
-    item.addEventListener("click",()=>{
-
-      openApp(app);
-
-    });
-
-
-    /* DRAG */
-
-    item.addEventListener("dragstart",e=>{
-
-      e.dataTransfer.setData("text/plain",index);
-
-      item.style.opacity=".45";
-
-    });
-
-
-    item.addEventListener("dragend",()=>{
-
-      item.style.opacity="1";
-
-    });
-
-
-    item.addEventListener("dragover",e=>{
-
-      e.preventDefault();
-
-    });
-
-
-    item.addEventListener("drop",e=>{
-
-      e.preventDefault();
-
-      const from = Number(
-        e.dataTransfer.getData("text/plain")
-      );
-
-      const to = Number(item.dataset.index);
-
-      if(from===to) return;
-
-      const moved = apps.splice(from,1)[0];
-
-      apps.splice(to,0,moved);
-
-      saveApps();
-
-      renderApps();
-
-    });
-
-
-    container.appendChild(item);
-
-  });
+tr.appendChild(td);
 
 }
 
+body.appendChild(tr);
 
-renderApps();
-
-
-/* =========================================================
-   APP OPEN
-========================================================= */
-
-function openApp(app){
-
-  document.querySelectorAll(".app-item")
-    .forEach(x=>x.classList.remove("active"));
-
-  hideAllPages();
-
-  document.getElementById("pageTitle").textContent = app.name;
-
-  /*
-    Direct navigation.
-    User's existing browser login session is used
-    whenever the service supports it.
-  */
-
-  window.location.assign(app.url);
+if(date > daysInMonth) break;
 
 }
 
+}
 
-/* =========================================================
-   HOME
-========================================================= */
+function showDate(day,isMonday){
 
-function showHome(){
+document.getElementById('dateTitle').textContent =
+'November ' + day + ', 2026';
 
-  hideAllPages();
+document.getElementById('dateInfo').textContent =
+isMonday
+? 'Monday 🪔 – సోమవారం'
+: 'Selected Calendar Date';
 
-  document.getElementById("homePage").style.display="flex";
+document.getElementById('datePopup').style.display='block';
 
-  document.getElementById("pageTitle").textContent="LOOPIN";
-
-  clearTools();
+document.body.style.overflow='hidden';
 
 }
 
+function closeDate(){
 
-function hideAllPages(){
+document.getElementById('datePopup').style.display='none';
 
-  document.getElementById("homePage").style.display="none";
-  document.getElementById("notesPage").style.display="none";
-  document.getElementById("savedPage").style.display="none";
-  document.getElementById("settingsPage").style.display="none";
+document.body.style.overflow='auto';
 
 }
 
+/* KIT DETAILS */
 
-function clearTools(){
+function showDetails(type){
 
-  document.querySelectorAll(".tool")
-    .forEach(x=>x.classList.remove("active"));
+closeDetails('miniModal');
+closeDetails('regularModal');
 
-}
+document.getElementById(
+type==='mini'?'miniModal':'regularModal'
+).style.display='block';
 
-
-/* =========================================================
-   NOTES
-========================================================= */
-
-function openNotes(){
-
-  hideAllPages();
-
-  document.getElementById("notesPage").style.display="block";
-
-  document.getElementById("pageTitle").textContent="Notes";
-
-  clearTools();
-
-  document.getElementById("notesTool")
-    .classList.add("active");
-
-  document.getElementById("notes").value =
-    localStorage.getItem(NOTES_KEY) || "";
+document.body.style.overflow='hidden';
 
 }
 
+function closeDetails(id){
 
-function saveNotes(){
+document.getElementById(id).style.display='none';
 
-  const value = document.getElementById("notes").value;
-
-  localStorage.setItem(NOTES_KEY,value);
-
-  document.getElementById("saveStatus").textContent =
-    "Saved locally · " +
-    new Date().toLocaleTimeString([],{
-      hour:"2-digit",
-      minute:"2-digit"
-    });
+document.body.style.overflow='auto';
 
 }
 
+function selectFromDetails(name,modal){
 
-function clearNotes(){
+closeDetails(modal);
 
-  if(!confirm("Clear all notes?")) return;
-
-  localStorage.removeItem(NOTES_KEY);
-
-  document.getElementById("notes").value="";
-
-  document.getElementById("saveStatus").textContent =
-    "Notes cleared";
+chooseKit(name);
 
 }
 
+function chooseKit(name){
 
-/* =========================================================
-   SAVED URLS
-========================================================= */
+document.getElementById('kit').value=name;
 
-function openSaved(){
+updateTotal();
 
-  hideAllPages();
-
-  document.getElementById("savedPage").style.display="block";
-
-  document.getElementById("pageTitle").textContent="Saved URLs";
-
-  clearTools();
-
-  document.getElementById("savedTool")
-    .classList.add("active");
-
-  renderSaved();
+document.getElementById('booking').scrollIntoView({
+behavior:'smooth'
+});
 
 }
 
+/* QUANTITY */
 
-function getSaved(){
+function changeQty(value){
 
-  try{
+quantity=Math.max(1,quantity+value);
 
-    return JSON.parse(
-      localStorage.getItem(SAVED_KEY) || "[]"
-    );
+document.getElementById('quantity').textContent=quantity;
 
-  }catch(e){
-
-    return [];
-
-  }
+updateTotal();
 
 }
 
+function updateTotal(){
 
-function renderSaved(){
+const select=document.getElementById('kit');
 
-  const list = document.getElementById("savedList");
+const price=Number(
+select.options[select.selectedIndex].dataset.price
+);
 
-  const saved = getSaved();
-
-  if(!saved.length){
-
-    list.innerHTML = `
-      <div class="saved-empty">
-        No saved URLs yet.
-      </div>
-    `;
-
-    return;
-
-  }
-
-  list.innerHTML="";
-
-  saved.forEach((item,index)=>{
-
-    const row = document.createElement("div");
-
-    row.className="saved-item";
-
-    row.innerHTML=`
-
-      <div class="saved-info">
-
-        <div class="saved-name">
-          ${escapeHTML(item.name)}
-        </div>
-
-        <div class="saved-url">
-          ${escapeHTML(item.url)}
-        </div>
-
-      </div>
-
-      <button
-        class="saved-open"
-        onclick="window.location.assign('${safeJS(item.url)}')">
-        Open
-      </button>
-
-      <button
-        class="delete-btn"
-        onclick="deleteSaved(${index})">
-        ✕
-      </button>
-
-    `;
-
-    list.appendChild(row);
-
-  });
+document.getElementById('total').textContent=
+'Total: ₹'+(price*quantity);
 
 }
 
+/* BOOKING */
 
-function saveCurrentURL(){
+async function bookOrder(paymentMethod){
 
-  const url = prompt(
-    "Enter website URL:",
-    "https://"
-  );
+const name=document.getElementById('name').value.trim();
 
-  if(!url) return;
+const mobile=document.getElementById('mobile').value.trim();
 
-  let finalURL=url.trim();
+const address=document.getElementById('address').value.trim();
 
-  if(!/^https?:\/\//i.test(finalURL)){
+const select=document.getElementById('kit');
 
-    finalURL="https://"+finalURL;
+const kit=select.value;
 
-  }
+const price=Number(
+select.options[select.selectedIndex].dataset.price
+);
 
-  let name=prompt(
-    "Enter name:",
-    new URL(finalURL).hostname
-  );
+const total=price*quantity;
 
-  if(!name) name=new URL(finalURL).hostname;
+const message=document.getElementById('message');
 
-  const saved=getSaved();
+const waButton=document.getElementById('whatsappBtn');
 
-  saved.push({
-    name,
-    url:finalURL
-  });
+const codButton=document.getElementById('codBtn');
 
-  localStorage.setItem(
-    SAVED_KEY,
-    JSON.stringify(saved)
-  );
+if(!name || !mobile || !address){
 
-  openSaved();
+message.textContent='Please fill all booking details.';
+
+return;
 
 }
 
+if(!/^[0-9]{10}$/.test(mobile)){
 
-function deleteSaved(index){
+message.textContent='Enter valid 10-digit mobile number.';
 
-  const saved=getSaved();
-
-  saved.splice(index,1);
-
-  localStorage.setItem(
-    SAVED_KEY,
-    JSON.stringify(saved)
-  );
-
-  renderSaved();
+return;
 
 }
 
+if(!['Mini Pooja Kit','Regular Pooja Kit'].includes(kit)){
 
-function clearSaved(){
+message.textContent='Please select a valid kit.';
 
-  if(!confirm("Delete all saved URLs?")) return;
-
-  localStorage.removeItem(SAVED_KEY);
-
-  renderSaved();
+return;
 
 }
 
+waButton.disabled=true;
+codButton.disabled=true;
 
-/* =========================================================
-   SETTINGS
-========================================================= */
+message.textContent='Saving your booking...';
 
-function openSettings(){
+const bookingId='KM'+Date.now();
 
-  hideAllPages();
+const bookingData={
 
-  document.getElementById("settingsPage").style.display="block";
+name:name,
+mobile:mobile,
+address:address,
+kit:kit,
+price:price,
+quantity:quantity,
+payment_method:paymentMethod
 
-  document.getElementById("pageTitle").textContent="Settings";
+};
 
-  clearTools();
+try{
 
-  document.getElementById("settingsTool")
-    .classList.add("active");
+const response=await fetch(
+SUPABASE_URL+'/rest/v1/pooja_bookings',
+{
+method:'POST',
 
-}
+headers:{
+'Content-Type':'application/json',
+'apikey':SUPABASE_KEY,
+'Authorization':'Bearer '+SUPABASE_KEY,
+'Prefer':'return=minimal'
+},
 
-
-function resetApps(){
-
-  if(!confirm("Restore default apps and order?")) return;
-
-  apps=JSON.parse(
-    JSON.stringify(defaultApps)
-  );
-
-  saveApps();
-
-  renderApps();
-
-}
-
-
- /* =========================================================
-    ADD APP
- ========================================================= */
-
-function openAddApp(){
-
-  document.getElementById("addModal")
-    .classList.add("show");
-
-  setTimeout(()=>{
-
-    document.getElementById("appName").focus();
-
-  },100);
-
-}
-
-
-function closeAddApp(){
-
-  document.getElementById("addModal")
-    .classList.remove("show");
-
-  document.getElementById("appName").value="";
-  document.getElementById("appUrl").value="";
-  document.getElementById("appLetter").value="";
-
-}
-
-
-function addApp(){
-
-  const name=
-    document.getElementById("appName")
-    .value.trim();
-
-  let url=
-    document.getElementById("appUrl")
-    .value.trim();
-
-  const letter=
-    document.getElementById("appLetter")
-    .value.trim()
-    .slice(0,2);
-
-  if(!name){
-
-    alert("Please enter app name.");
-
-    return;
-
-  }
-
-  if(!url){
-
-    alert("Please enter website URL.");
-
-    return;
-
-  }
-
-  if(!/^https?:\/\//i.test(url)){
-
-    url="https://"+url;
-
-  }
-
-  try{
-
-    new URL(url);
-
-  }catch(e){
-
-    alert("Please enter a valid URL.");
-
-    return;
-
-  }
-
-
-  apps.push({
-
-    id:"custom_"+Date.now(),
-
-    name:name,
-
-    url:url,
-
-    letter:letter || name.charAt(0),
-
-    color:"#6c5ce7"
-
-  });
-
-
-  saveApps();
-
-  renderApps();
-
-  closeAddApp();
-
-}
-
-
-/* =========================================================
-   GOOGLE SEARCH
-========================================================= */
-
-function openSearch(){
-
-  document.getElementById("searchOverlay")
-    .classList.add("show");
-
-  const input=
-    document.getElementById("searchInput");
-
-  input.value="";
-
-  setTimeout(()=>input.focus(),80);
-
-}
-
-
-function closeSearch(){
-
-  document.getElementById("searchOverlay")
-    .classList.remove("show");
-
-}
-
-
-function closeSearchOutside(e){
-
-  if(e.target.id==="searchOverlay"){
-
-    closeSearch();
-
-  }
-
-}
-
-
-function handleSearch(e){
-
-  if(e.key==="Escape"){
-
-    closeSearch();
-
-    return;
-
-  }
-
-  if(e.key==="Enter"){
-
-    const q=
-      document.getElementById("searchInput")
-      .value.trim();
-
-    if(!q) return;
-
-    window.location.assign(
-      "https://www.google.com/search?q="+
-      encodeURIComponent(q)
-    );
-
-  }
-
-}
-
-
-/* =========================================================
-   KEYBOARD SHORTCUT
-========================================================= */
-
-document.addEventListener("keydown",e=>{
-
-  if(
-    (e.ctrlKey || e.metaKey) &&
-    e.key.toLowerCase()==="k"
-  ){
-
-    e.preventDefault();
-
-    openSearch();
-
-  }
-
-  if(e.key==="Escape"){
-
-    closeSearch();
-
-  }
+body:JSON.stringify(bookingData)
 
 });
 
+if(!response.ok){
 
-/* =========================================================
-   MODAL OUTSIDE CLICK
-========================================================= */
+const errorText=await response.text();
 
-document.getElementById("addModal")
-  .addEventListener("click",e=>{
-
-    if(e.target.id==="addModal"){
-
-      closeAddApp();
-
-    }
-
-  });
-
-
-/* =========================================================
-   HELPERS
-========================================================= */
-
-function escapeHTML(str){
-
-  return String(str)
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
+throw new Error(errorText);
 
 }
 
+const orderText=
 
-function safeJS(str){
+'Karthika Masam Pooja Kit Booking\n'+
+'Booking ID: '+bookingId+'\n'+
+'Name: '+name+'\n'+
+'Mobile: '+mobile+'\n'+
+'Address: '+address+'\n'+
+'Kit: '+kit+'\n'+
+'Quantity: '+quantity+'\n'+
+'Total: ₹'+total+'\n'+
+'Payment: '+paymentMethod;
 
-  return String(str)
-    .replaceAll("\\","\\\\")
-    .replaceAll("'","\\'");
+if(paymentMethod==='WhatsApp'){
+
+const waUrl=
+'https://wa.me/'+WHATSAPP_NUMBER+
+'?text='+encodeURIComponent(orderText);
+
+window.open(waUrl,'_blank');
+
+message.textContent=
+'Booking saved! Continue in WhatsApp.';
+
+}else{
+
+message.textContent=
+'Booking successful! Booking ID: '+
+bookingId+' | Total: ₹'+total;
 
 }
 
+document.getElementById('bookingForm').reset();
 
-/* =========================================================
-   OPTIONAL: SAVE URL QUICK ACTION
-========================================================= */
+quantity=1;
 
-/*
-   Double-click the LOOPIN logo to save a URL quickly.
-*/
+document.getElementById('quantity').textContent='1';
 
-document.querySelector(".logo-btn")
-  .addEventListener("dblclick",saveCurrentURL);
+updateTotal();
 
+}catch(error){
 
-</script>
+console.error(error);
 
-</body>
+message.textContent=
+'Booking failed. Please try again. '+error.message;
+
+}finally{
+
+waButton.disabled=false;
+codButton.disabled=false;
+
+}
+
+}
+
+/* START */
+
+createCalendar();
+
+</script></body>
 </html>
